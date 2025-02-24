@@ -13,9 +13,9 @@ public record FormRequest(
         Integer id,
         @Email
         String email,
-        @NotEmpty
+        @Length(min = 1, max = 3)
         String name,
-        @NotNull
+        @NotNull(message = "날짜는 꼭 필요해요!")
         LocalDateTime createdAt
 ) {
 

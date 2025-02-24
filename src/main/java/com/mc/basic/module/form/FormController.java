@@ -2,15 +2,16 @@ package com.mc.basic.module.form;
 
 import com.mc.basic.module.form.request.FormRequest;
 import com.mc.basic.module.form.response.FormResponse;
+import com.mc.basic.module.form.validator.FormValidator;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +20,11 @@ import java.time.LocalDateTime;
 public class FormController {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @InitBinder("formRequest")
+    private void formInitBinder(WebDataBinder binder) {
+        binder.addValidators(new FormValidator());
+    }
 
     @GetMapping
     public String getForm(
@@ -41,7 +47,7 @@ public class FormController {
             BindingResult bindingResult,
             Model model
     ){
-        log.info("form : {}", request);
+        log.info("model : {}", model);
         log.info("bindingResult : {}", bindingResult);
 
         if(bindingResult.hasErrors()) {
@@ -50,12 +56,37 @@ public class FormController {
 
         FormResponse response = generateFormResponse(request);
         model.addAttribute("response", response);
-
+        return "spring/example";
+    }
+    // pathVariable : 동적경로
+    @PostMapping("id/{id}")
+    public String postForm(
+            @PathVariable
+            int id,
+            String email,
+            String name,
+            LocalDateTime createdAt,
+            Model model
+    ){
+        model.addAttribute("response"
+                , new FormResponse(id, email, name, createdAt));
         return "spring/example";
     }
 
+    @PostMapping("session/regist")
+    public String registSession(FormRequest request, HttpSession session){
+        session.setAttribute("account", request);
+        return "redirect:/form/session/confirm";
+    }
 
-
+    @GetMapping("session/confirm")
+    public String confirmSession(
+            @SessionAttribute
+            FormRequest account
+    ){
+        log.info("session : {}", account);
+        return "spring/session";
+    }
 
 
     private FormResponse generateFormResponse(FormRequest request) {

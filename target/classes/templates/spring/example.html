@@ -4,19 +4,14 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body th:object="${formRequest}">
-    <h1>Hello Springboot</h1>
-    <ol >
-        <li th:if="${#fields.hasErrors('*')}">
-            <p th:each="err: ${#fields.allErrors()}" th:text="${err}"></p>
-        </li>
-    </ol>
-
-    <ol th:object="${response}"  th:unless="${#fields.hasErrors('*')}">
+<body >
+<div >
+    <ol type="i" th:object="${response}">
         <li th:text="*{id}"></li>
         <li th:text="*{email}"></li>
         <li th:text="*{name}"></li>
         <li th:text="*{lastAccess}"></li>
     </ol>
+</div>
 </body>
 </html>

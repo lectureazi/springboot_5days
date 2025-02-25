@@ -25,7 +25,9 @@ import java.util.List;
 public class FormController {
 
     /***
-     *  request content-type : application/x-www-form-url-encoded 일때 컨트롤러
+     *  request content-type : application/x-www-form-url-encoded 컨트롤러
+     *  method return type :  String, ModelAndView, void
+     *
      */
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
